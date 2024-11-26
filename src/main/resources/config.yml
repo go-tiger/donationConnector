@@ -1,0 +1,22 @@
+Donation:
+  0:
+    - say 가격을 0원으로 쓰면 설정 안된 가격을 의미합니다.
+  3000:
+    - du item {player}
+  5000:
+    - du monster {player}
+  10000:
+    - du lightning {player}
+  20000:
+    - du tp {player}
+  30000:
+    - du clear {player}
+  50000:
+    - du inven {player}
+  100000:
+    - du kill {player}
+
+settings:
+  allow-duplicate-platforms: false  # 중복 등록 금지
+  disable-unlink: true              # 연동 해제 금지
+  lock-edits: true                  # 수정 및 삭제 금지

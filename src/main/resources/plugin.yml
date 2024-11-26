@@ -3,3 +3,7 @@ version: '1.0'
 main: dev.gotiger.donationConnector.DonationConnector
 api-version: '1.16'
 load: STARTUP
+commands:
+  dc:
+    description: 후원 연동 명령어
+    usage: /dc <add|edit|remove|on|off|reconnect>
