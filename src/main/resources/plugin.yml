@@ -1,0 +1,5 @@
+name: donationConnector
+version: '1.0'
+main: dev.gotiger.donationConnector.DonationConnector
+api-version: '1.16'
+load: STARTUP
