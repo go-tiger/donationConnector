@@ -2,17 +2,24 @@ package dev.gotiger.donationConnector;
 
 import dev.gotiger.donationConnector.command.DonationCommand;
 import dev.gotiger.donationConnector.config.ConfigManager;
+import dev.gotiger.donationConnector.config.StreamerManager;
+import dev.gotiger.donationConnector.listener.PlayerEventListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DonationConnector extends JavaPlugin {
     private ConfigManager configManager;
+    private StreamerManager streamerManager;
 
     @Override
     public void onEnable() {
-        this.configManager = new ConfigManager(this);
+        configManager = new ConfigManager(this);
+        streamerManager = new StreamerManager(configManager);
 
         // 명령어 등록
         getCommand("dc").setExecutor(new DonationCommand(this));
+
+        // 이벤트 등록
+        getServer().getPluginManager().registerEvents(new PlayerEventListener(this), this);
 
         getLogger().info("DonationConnector 플러그인이 활성화되었습니다.");
     }
