@@ -32,4 +32,8 @@ public class StreamerManager {
             e.printStackTrace();
         }
     }
+
+    public ConfigurationSection isStreamerRegistered(UUID playerUUID) {
+        return streamerConfig.getConfigurationSection(playerUUID.toString());
+    }
 }
