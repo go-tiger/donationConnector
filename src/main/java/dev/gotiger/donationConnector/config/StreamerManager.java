@@ -1,9 +1,23 @@
 package dev.gotiger.donationConnector.config;
 
-public class StreamerManager {
-    private final  ConfigManager configManager;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import dev.gotiger.donationConnector.DonationConnector;
+import java.io.File;
 
-    public StreamerManager(ConfigManager configManager) {
-        this.configManager = configManager;
+public class StreamerManager {
+    private final FileConfiguration streamerConfig;
+    private final File streamerFile;
+
+    public StreamerManager(DonationConnector plugin) {
+        this.streamerFile = new File(plugin.getDataFolder(), "streamer.yml");
+        if (!streamerFile.exists()) {
+            plugin.saveResource("streamer.yml", false);
+        }
+        this.streamerConfig = YamlConfiguration.loadConfiguration(streamerFile);
+    }
+
+    public FileConfiguration getStreamerConfig() {
+        return streamerConfig;
     }
 }
