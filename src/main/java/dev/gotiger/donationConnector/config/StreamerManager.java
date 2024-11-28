@@ -1,9 +1,13 @@
 package dev.gotiger.donationConnector.config;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import dev.gotiger.donationConnector.DonationConnector;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 public class StreamerManager {
     private final FileConfiguration streamerConfig;
@@ -19,5 +23,13 @@ public class StreamerManager {
 
     public FileConfiguration getStreamerConfig() {
         return streamerConfig;
+    }
+
+    public void saveStreamerConfig() {
+        try {
+            streamerConfig.save(streamerFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
