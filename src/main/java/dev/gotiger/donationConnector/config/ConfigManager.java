@@ -40,4 +40,8 @@ public class ConfigManager {
         }
         return donationConfig;
     }
+
+    public boolean isAllowDuplicatePlatforms(DonationConnector plugin) {
+        return plugin.getConfig().getBoolean("settings.allow-duplicate-platforms", false);
+    }
 }
