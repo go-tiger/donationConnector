@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class StreamerManager {
-    private final FileConfiguration streamerConfig;
+    private FileConfiguration streamerConfig;
     private final File streamerFile;
 
     public StreamerManager(DonationConnector plugin) {
@@ -18,7 +18,11 @@ public class StreamerManager {
         if (!streamerFile.exists()) {
             plugin.saveResource("streamer.yml", false);
         }
-        this.streamerConfig = YamlConfiguration.loadConfiguration(streamerFile);
+        loadStreamerConfig();
+    }
+
+    private void loadStreamerConfig() {
+        streamerConfig = YamlConfiguration.loadConfiguration(streamerFile);
     }
 
     public FileConfiguration getStreamerConfig() {
