@@ -48,4 +48,8 @@ public class ConfigManager {
     public boolean isDisableUnlink(DonationConnector plugin) {
         return plugin.getConfig().getBoolean("settings.disable-unlink", true);
     }
+
+    public boolean isLockEdit(DonationConnector plugin) {
+        return plugin.getConfig().getBoolean("settings.lock-edits", true);
+    }
 }
