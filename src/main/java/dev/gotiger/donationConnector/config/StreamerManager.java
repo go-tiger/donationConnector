@@ -25,6 +25,10 @@ public class StreamerManager {
         streamerConfig = YamlConfiguration.loadConfiguration(streamerFile);
     }
 
+    private void reloadStreamerConfig() {
+        loadStreamerConfig();
+    }
+
     public FileConfiguration getStreamerConfig() {
         return streamerConfig;
     }
