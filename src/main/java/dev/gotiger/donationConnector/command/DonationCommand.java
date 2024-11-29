@@ -1,12 +1,21 @@
 package dev.gotiger.donationConnector.command;
 
 import dev.gotiger.donationConnector.DonationConnector;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
-public class DonationCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DonationCommand implements CommandExecutor, TabCompleter {
     private final DonationConnector plugin;
 
     public DonationCommand(DonationConnector plugin) {
@@ -66,4 +75,92 @@ public class DonationCommand implements CommandExecutor {
         }
         return true;
     }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!command.getName().equalsIgnoreCase("dc")) {
+            return null;
+        }
+        List<String> completions = new ArrayList<>();
+
+        if (args.length == 1) {
+            if (sender.isOp()) {
+                completions.addAll(PLAYER_COMMANDS);
+                completions.addAll(OP_COMMANDS);
+            } else if (sender instanceof Player) {
+                completions.addAll(PLAYER_COMMANDS);
+            }
+        } else if (args.length == 2) {
+            String subCommand = args[0].toLowerCase();
+            switch (subCommand) {
+                case "add":
+                case "edit":
+                case "remove":
+                    completions.addAll(getOnlinePlayerNames());
+                    break;
+                case "reconnect":
+                    if (sender.isOp()) {
+                        completions.addAll(getOnlinePlayerNames());
+                    }
+                    break;
+                case "debug":
+                    completions.addAll(DEBUG_SUBCOMMANDS);
+                    break;
+                case "give":
+                    completions.addAll(getOnlinePlayerNames());
+                    break;
+                default:
+                    break;
+            }
+        } else if (args.length == 3) {
+            String subCommand = args[0].toLowerCase();
+            String debugSubCommand = args[1].toLowerCase();
+
+            if (subCommand.equals("debug") && DEBUG_SUBCOMMANDS.contains(debugSubCommand)) {
+                completions.addAll(getOnlinePlayerNames());
+            } else if (subCommand.equals("give")) {
+                completions.add("<후원금액>");
+            }
+        } else if (args.length == 4) {
+            String subCommand = args[0].toLowerCase();
+            String debugSubCommand = args[1].toLowerCase();
+
+            if (subCommand.equals("debug") && (debugSubCommand.equals("add") || debugSubCommand.equals("edit") || debugSubCommand.equals("remove"))) {
+                completions.addAll(PLATFORMS);
+            }
+        } else if (args.length == 5) {
+            String subCommand = args[0].toLowerCase();
+            String debugSubCommand = args[1].toLowerCase();
+
+            if (subCommand.equals("debug") && (debugSubCommand.equals("add") || debugSubCommand.equals("edit") || debugSubCommand.equals("remove"))) {
+                completions.add("<치지직UUID/숲ID>");
+            }
+        }
+        return filterCompletions(completions, args[args.length - 1]);
+    }
+
+    private List<String> filterCompletions(List<String> completions, String input) {
+        if (input == null || input.isEmpty()) {
+            return completions;
+        }
+        String lowerInput = input.toLowerCase();
+        List<String> filtered = new ArrayList<>();
+        for (String completion : completions) {
+            if (completion.toLowerCase().startsWith(lowerInput)) {
+                filtered.add(completion);
+            }
+        }
+        return filtered;
+    }
+
+    private List<String> getOnlinePlayerNames() {
+        return new ArrayList<>(org.bukkit.Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName)
+                .collect(Collectors.toList()));
+    }
+
+    private static final List<String> PLATFORMS = Arrays.asList("chzzk", "soop");
+    private static final List<String> PLAYER_COMMANDS = Arrays.asList("add", "edit", "remove", "on", "off", "reconnect");
+    private static final List<String> OP_COMMANDS = Arrays.asList("reconnect", "debug", "give", "reload");
+    private static final List<String> DEBUG_SUBCOMMANDS = Arrays.asList("add", "edit", "remove", "on", "off");
 }
