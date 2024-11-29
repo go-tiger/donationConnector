@@ -44,4 +44,8 @@ public class ConfigManager {
     public boolean isAllowDuplicatePlatforms(DonationConnector plugin) {
         return plugin.getConfig().getBoolean("settings.allow-duplicate-platforms", false);
     }
+
+    public boolean isDisableUnlink(DonationConnector plugin) {
+        return plugin.getConfig().getBoolean("settings.disable-unlink", true);
+    }
 }
