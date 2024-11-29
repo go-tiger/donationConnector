@@ -1,14 +1,14 @@
 package dev.gotiger.donationConnector.command;
 
 import dev.gotiger.donationConnector.DonationConnector;
-import org.bukkit.Bukkit;
+import dev.gotiger.donationConnector.config.ConfigManager;
+import dev.gotiger.donationConnector.config.StreamerManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,9 +17,13 @@ import java.util.stream.Collectors;
 
 public class DonationCommand implements CommandExecutor, TabCompleter {
     private final DonationConnector plugin;
+    private final ConfigManager configManager;
+    private final StreamerManager streamerManager;
 
     public DonationCommand(DonationConnector plugin) {
         this.plugin = plugin;
+        this.configManager = new ConfigManager(plugin);
+        this.streamerManager = new StreamerManager(plugin);
     }
 
     @Override
@@ -67,6 +71,9 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "reload":
                 // dc reload : 설정 파일 리로드
+                configManager.reloadConfig();
+                configManager.getStreamerManager().reloadStreamerConfig();
+                sender.sendMessage(ChatColor.GREEN + "플러그인이 성공적으로 리로드되었습니다.");
                 break;
 
             default:

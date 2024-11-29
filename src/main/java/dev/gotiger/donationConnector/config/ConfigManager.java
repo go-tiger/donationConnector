@@ -20,6 +20,11 @@ public class ConfigManager {
         streamerManager = new StreamerManager(plugin);
     }
 
+    public void reloadConfig() {
+        plugin.reloadConfig();
+        plugin.getConfigManager().getStreamerManager().reloadStreamerConfig();
+    }
+
     public Map<Integer, List<String>> getDonationConfig() {
         Map<Integer, List<String>> donationConfig = new HashMap<>();
 
