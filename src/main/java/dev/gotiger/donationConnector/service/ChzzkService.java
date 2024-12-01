@@ -17,8 +17,7 @@ public class ChzzkService {
     private final DonationConnector plugin;
     private final ConfigManager configManager;
     private final DonationService donationService;
-    private ChzzkAPI api;
-    private final Map<UUID, ChzzkAPI> playerApis = new HashMap<>();
+    public static final Map<UUID, ChzzkAPI> playerApis = new HashMap<>();
 
     public ChzzkService(DonationConnector plugin) {
         this.plugin = plugin;
@@ -31,7 +30,7 @@ public class ChzzkService {
         plugin.getLogger().info(player.getName() + " | " + playerUUID + " | " + broadcastUUID);
         if (broadcastUUID != null) {
             try {
-                api = new ChzzkAPI.ChzzkBuilder().withData(broadcastUUID).build()
+                ChzzkAPI api = new ChzzkAPI.ChzzkBuilder().withData(broadcastUUID).build()
                         .addListeners(new ChzzkListener() {
                             @Override
                             public void onDonationChat(DonationChatEvent e) {
@@ -56,6 +55,21 @@ public class ChzzkService {
                 playerApis.remove(playerUUID);
             } catch (ChzzkException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public void disconnectAllChzzkStreamer() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID playerUUID = player.getUniqueId();
+            ChzzkAPI api = playerApis.get(playerUUID);
+            if (api != null) {
+                try {
+                    api.disconnect();
+                    playerApis.remove(playerUUID);
+                } catch (ChzzkException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
