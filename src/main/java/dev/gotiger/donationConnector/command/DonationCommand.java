@@ -4,6 +4,7 @@ import dev.gotiger.donationConnector.DonationConnector;
 import dev.gotiger.donationConnector.config.ConfigManager;
 import dev.gotiger.donationConnector.config.StreamerManager;
 import dev.gotiger.donationConnector.service.ChzzkService;
+import dev.gotiger.donationConnector.service.DonationService;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,12 +23,14 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
     private final ConfigManager configManager;
     private final StreamerManager streamerManager;
     private final ChzzkService chzzkService;
+    private final DonationService donationService;
 
     public DonationCommand(DonationConnector plugin) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin);
         this.streamerManager = new StreamerManager(plugin);
         this.chzzkService = new ChzzkService(plugin);
+        this.donationService = new DonationService(plugin);
     }
 
     @Override
@@ -82,6 +85,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "on":
                 // dc on : 입력한 플레이어의 후원 연동 활성화
+                sender.sendMessage(donationService.enableDonation(uuid));
                 break;
 
             case "off":

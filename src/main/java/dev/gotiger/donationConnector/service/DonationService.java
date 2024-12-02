@@ -2,20 +2,26 @@ package dev.gotiger.donationConnector.service;
 
 import dev.gotiger.donationConnector.DonationConnector;
 import dev.gotiger.donationConnector.config.ConfigManager;
+import dev.gotiger.donationConnector.config.StreamerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class DonationService {
 
     private final DonationConnector plugin;
     private final ConfigManager configManager;
+    private final StreamerManager streamerManager;
 
     public DonationService(DonationConnector plugin) {
         this.plugin = plugin;
         this.configManager = plugin.getConfigManager();
+        this.streamerManager = plugin.getConfigManager().getStreamerManager();
     }
 
     public void executeCommands(Player player, Integer payAmount) {
@@ -39,4 +45,21 @@ public class DonationService {
 
     }
 
+    public String enableDonation(UUID playerUUID) {
+        ConfigurationSection playerData = streamerManager.getStreamerData(playerUUID);
+        boolean donationLink = playerData.getBoolean("donationLink", false);
+
+        if (!donationLink) {
+            ConfigurationSection platformSection = playerData.getConfigurationSection("platforms");
+
+            if (platformSection == null || platformSection.getKeys(false).isEmpty()) {
+                return ChatColor.RED + "후원 연동 먼저 등록해 주세요.";
+            }
+
+            playerData.set("donationLink", true);
+            streamerManager.saveStreamerConfig();
+            return ChatColor.GREEN + "후원 연동 기능을 켰습니다.";
+        }
+        return ChatColor.GREEN + "후원 연동 기능이 이미 켜져있습니다.";
+    }
 }
