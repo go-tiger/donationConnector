@@ -3,6 +3,7 @@ package dev.gotiger.donationConnector.command;
 import dev.gotiger.donationConnector.DonationConnector;
 import dev.gotiger.donationConnector.config.ConfigManager;
 import dev.gotiger.donationConnector.config.StreamerManager;
+import dev.gotiger.donationConnector.service.ChzzkService;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,17 +14,20 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DonationCommand implements CommandExecutor, TabCompleter {
     private final DonationConnector plugin;
     private final ConfigManager configManager;
     private final StreamerManager streamerManager;
+    private final ChzzkService chzzkService;
 
     public DonationCommand(DonationConnector plugin) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin);
         this.streamerManager = new StreamerManager(plugin);
+        this.chzzkService = new ChzzkService(plugin);
     }
 
     @Override
@@ -31,10 +35,23 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
         if (args.length < 1) {
             return false;
         }
+        Player player = (Player) sender;
+        UUID uuid = player.getUniqueId();
 
         switch (args[0].toLowerCase()) {
             case "add":
                 // dc add <플랫폼> <치지직UUID/숲아이디> : 입력한 플레이어의 플랫폼에 후원 연동 추가
+                String nickname = player.getName();
+                String platform = args[1].toLowerCase();
+                String broadcastUUID = args[2];
+
+                if ("chzzk".equals(platform)) {
+                    String result = chzzkService.addChzzkStreamer(nickname, uuid, broadcastUUID);
+                    sender.sendMessage(result);
+
+                } else {
+                    sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
+                }
                 break;
 
             case "edit":
@@ -101,9 +118,12 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
             String subCommand = args[0].toLowerCase();
             switch (subCommand) {
                 case "add":
+                    completions.addAll(PLATFORMS);
                 case "edit":
                 case "remove":
-                    completions.addAll(getOnlinePlayerNames());
+                    if (sender.isOp()) {
+                        completions.addAll(getOnlinePlayerNames());
+                    }
                     break;
                 case "reconnect":
                     if (sender.isOp()) {
@@ -121,10 +141,14 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
             }
         } else if (args.length == 3) {
             String subCommand = args[0].toLowerCase();
-            String debugSubCommand = args[1].toLowerCase();
 
-            if (subCommand.equals("debug") && DEBUG_SUBCOMMANDS.contains(debugSubCommand)) {
-                completions.addAll(getOnlinePlayerNames());
+            if (subCommand.equals("add")) {
+                completions.add("<치지직UUID/숲ID>");
+            } else if (subCommand.equals("debug")) {
+                String debugSubCommand = args[1].toLowerCase();
+                if (DEBUG_SUBCOMMANDS.contains(debugSubCommand)) {
+                    completions.addAll(getOnlinePlayerNames());
+                }
             } else if (subCommand.equals("give")) {
                 completions.add("<후원금액>");
             }
