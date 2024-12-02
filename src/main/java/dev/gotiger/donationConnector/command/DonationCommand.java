@@ -90,6 +90,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "off":
                 // dc off : 입력한 플레이어의 후원 연동 비활성화
+                sender.sendMessage(donationService.disableDonation(uuid));
                 break;
 
             case "reconnect":

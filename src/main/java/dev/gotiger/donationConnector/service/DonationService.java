@@ -62,4 +62,18 @@ public class DonationService {
         }
         return ChatColor.GREEN + "후원 연동 기능이 이미 켜져있습니다.";
     }
+
+    public String disableDonation(UUID playerUUID) {
+        ConfigurationSection playerData = streamerManager.getStreamerData(playerUUID);
+        boolean donationLink = playerData.getBoolean("donationLink", false);
+
+        if (!donationLink) {
+            return ChatColor.GREEN + "후원 연동 기능이 이미 꺼져있습니다.";
+        }
+
+        playerData.set("donationLink", false);
+        streamerManager.saveStreamerConfig();
+
+        return ChatColor.GREEN + "후원 연동 기능을 껐습니다.";
+    }
 }
