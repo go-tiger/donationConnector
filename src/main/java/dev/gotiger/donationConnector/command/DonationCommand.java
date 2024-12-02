@@ -48,7 +48,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 if ("chzzk".equals(platform)) {
                     String result = chzzkService.addChzzkStreamer(nickname, uuid, broadcastUUID);
                     sender.sendMessage(result);
-
                 } else {
                     sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
                 }
@@ -56,6 +55,16 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "edit":
                 // dc edit <플랫폼> <치지직UUID/숲아이디> : 입력한 플레이어의 플랫폼에 후원 연동 수정
+                nickname = player.getName();
+                platform = args[1].toLowerCase();
+                broadcastUUID = args[2];
+
+                if ("chzzk".equals(platform)) {
+                    String result = chzzkService.updateChzzkStreamer(nickname, uuid, broadcastUUID);
+                    sender.sendMessage(result);
+                } else {
+                    sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
+                }
                 break;
 
             case "remove":
@@ -120,6 +129,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 case "add":
                     completions.addAll(PLATFORMS);
                 case "edit":
+                    completions.addAll(PLATFORMS);
                 case "remove":
                     if (sender.isOp()) {
                         completions.addAll(getOnlinePlayerNames());
@@ -142,7 +152,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
         } else if (args.length == 3) {
             String subCommand = args[0].toLowerCase();
 
-            if (subCommand.equals("add")) {
+            if (subCommand.equals("add") || subCommand.equals("edit")) {
                 completions.add("<치지직UUID/숲ID>");
             } else if (subCommand.equals("debug")) {
                 String debugSubCommand = args[1].toLowerCase();
