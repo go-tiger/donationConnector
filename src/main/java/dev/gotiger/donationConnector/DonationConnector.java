@@ -31,4 +31,8 @@ public final class DonationConnector extends JavaPlugin {
         chzzkService.disconnectAllChzzkStreamer();
         getLogger().info("DonationConnector 플러그인이 비활성화되었습니다.");
     }
+
+    public ChzzkService getChzzkService() {
+        return this.chzzkService;
+    }
 }

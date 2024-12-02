@@ -5,6 +5,7 @@ import dev.gotiger.donationConnector.config.ConfigManager;
 import dev.gotiger.donationConnector.config.StreamerManager;
 import dev.gotiger.donationConnector.service.ChzzkService;
 import dev.gotiger.donationConnector.service.DonationService;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,6 +97,29 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "reconnect":
                 // dc reconnect : 후원 재접속
+                if (sender.isOp()) {
+                    if (args.length == 1) {
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            UUID playerUUID = onlinePlayer.getUniqueId();
+                            String result = donationService.reconnectDonation(playerUUID);
+                            onlinePlayer.sendMessage(result);
+                        }
+                    } else {
+                        String targetName = args[1];
+                        Player targetPlayer = Bukkit.getPlayer(targetName);
+
+                        if (targetPlayer != null) {
+                            UUID targetUUID = targetPlayer.getUniqueId();
+                            String result = donationService.reconnectDonation(targetUUID);
+                            targetPlayer.sendMessage(result);
+                        } else {
+                            sender.sendMessage(ChatColor.RED + "해당 플레이어를 찾을 수 없습니다.");
+                        }
+                    }
+                } else {
+                    String result = donationService.reconnectDonation(uuid);
+                    sender.sendMessage(result);
+                }
                 break;
 
             case "debug":

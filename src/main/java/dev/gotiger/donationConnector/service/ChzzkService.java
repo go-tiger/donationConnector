@@ -165,4 +165,9 @@ public class ChzzkService {
         }
         return ChatColor.GREEN + "치지직 후원연동이 삭제 되었습니다.";
     }
+
+    public void reconnectChzzkStreamer(UUID playerUUID, String broadcastUUID) {
+        disconnectChzzkStreamer(playerUUID);
+        connectChzzkStreamer(playerUUID, broadcastUUID);
+    }
 }
