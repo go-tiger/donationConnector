@@ -68,7 +68,16 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "remove":
-                // dc remove : 입력한 플레이어의 후원 연동 삭제
+                // dc remove <플랫폼> : 입력한 플레이어의 플랫폼 후원 연동 삭제
+                nickname = player.getName();
+                platform = args[1].toLowerCase();
+                
+                if ("chzzk".equals(platform)) {
+                    String result = chzzkService.deleteChzzkStreamer(nickname, uuid);
+                    sender.sendMessage(result);
+                } else {
+                    sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
+                }
                 break;
 
             case "on":
@@ -127,13 +136,9 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
             String subCommand = args[0].toLowerCase();
             switch (subCommand) {
                 case "add":
-                    completions.addAll(PLATFORMS);
                 case "edit":
-                    completions.addAll(PLATFORMS);
                 case "remove":
-                    if (sender.isOp()) {
-                        completions.addAll(getOnlinePlayerNames());
-                    }
+                    completions.addAll(PLATFORMS);
                     break;
                 case "reconnect":
                     if (sender.isOp()) {

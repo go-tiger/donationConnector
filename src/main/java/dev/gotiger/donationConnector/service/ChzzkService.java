@@ -131,4 +131,38 @@ public class ChzzkService {
         }
         return ChatColor.GREEN + broadcastUUD + "로 수정되었습니다.";
     }
+
+    public String deleteChzzkStreamer(String nickname, UUID playerUUID) {
+        boolean checkLockEdit = configManager.isLockEdit(this.plugin);
+        Bukkit.getLogger().info(String.valueOf(checkLockEdit));
+
+        if (!checkLockEdit) {
+            return ChatColor.RED + "수정 및 삭제를 할 수 없습니다.";
+        }
+
+        ConfigurationSection playerData = streamerManager.getStreamerData(playerUUID);
+        boolean donationLink = playerData.getBoolean("donationLink", false);
+
+        if (!donationLink) {
+            return ChatColor.RED + "등록 되어있지 않습니다.";
+        }
+
+        ConfigurationSection platformSection = playerData.getConfigurationSection("platforms");
+
+        if (platformSection != null && platformSection.contains("chzzk")) {
+            playerData.set("nickname", nickname);
+            platformSection.set("chzzk", null);
+
+            if (platformSection.contains("soop")) {
+                playerData.set("priority", "soop");
+            } else {
+                playerData.set("donationLink", false);
+                playerData.set("priority", null);
+            }
+            streamerManager.saveStreamerConfig();
+        } else {
+            return ChatColor.RED + "기존에 등록된 치지직 계정이 없습니다.";
+        }
+        return ChatColor.GREEN + "치지직 후원연동이 삭제 되었습니다.";
+    }
 }
