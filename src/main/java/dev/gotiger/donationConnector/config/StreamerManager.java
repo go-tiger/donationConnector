@@ -27,6 +27,7 @@ public class StreamerManager {
 
     public void reloadStreamerConfig() {
         loadStreamerConfig();
+        saveStreamerConfig();
     }
 
     public FileConfiguration getStreamerConfig() {
