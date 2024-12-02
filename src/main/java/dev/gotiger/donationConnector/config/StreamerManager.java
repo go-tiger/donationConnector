@@ -42,7 +42,7 @@ public class StreamerManager {
         }
     }
 
-    public ConfigurationSection isStreamerRegistered(UUID playerUUID) {
+    public ConfigurationSection getStreamerData(UUID playerUUID) {
         return streamerConfig.getConfigurationSection(playerUUID.toString());
     }
 }

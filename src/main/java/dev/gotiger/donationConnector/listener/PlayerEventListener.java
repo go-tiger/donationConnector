@@ -30,7 +30,7 @@ public class PlayerEventListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         String playerName = player.getName();
 
-        ConfigurationSection playerStreamerData = configManager.getStreamerManager().isStreamerRegistered(playerUUID);
+        ConfigurationSection playerStreamerData = configManager.getStreamerManager().getStreamerData(playerUUID);
 
         if (playerStreamerData != null) {
             boolean donationLink = playerStreamerData.getBoolean("donationLink", false);
