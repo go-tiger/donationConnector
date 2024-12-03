@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +44,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
         switch (args[0].toLowerCase()) {
             case "add":
-                // dc add <플랫폼> <치지직UUID/숲아이디> : 입력한 플레이어의 플랫폼에 후원 연동 추가
                 String nickname = player.getName();
                 String platform = args[1].toLowerCase();
                 String broadcastUUID = args[2];
@@ -60,7 +58,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "edit":
-                // dc edit <플랫폼> <치지직UUID/숲아이디> : 입력한 플레이어의 플랫폼에 후원 연동 수정
                 nickname = player.getName();
                 platform = args[1].toLowerCase();
                 broadcastUUID = args[2];
@@ -76,7 +73,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "remove":
-                // dc remove <플랫폼> : 입력한 플레이어의 플랫폼 후원 연동 삭제
                 nickname = player.getName();
                 platform = args[1].toLowerCase();
                 
@@ -90,19 +86,16 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "on":
-                // dc on : 입력한 플레이어의 후원 연동 활성화
                 sender.sendMessage(donationService.enableDonation(uuid));
                 donationService.reconnectDonation(uuid);
                 break;
 
             case "off":
-                // dc off : 입력한 플레이어의 후원 연동 비활성화
                 sender.sendMessage(donationService.disableDonation(uuid));
                 chzzkService.disconnectChzzkStreamer(uuid);
                 break;
 
             case "reconnect":
-                // dc reconnect : 후원 재접속
                 if (sender.isOp()) {
                     if (args.length == 1) {
                         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -129,11 +122,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "debug":
-                // dc debug add <플레이어> <플랫폼> <치지직UUID/숲아이디> : 해당 플레이어의 플랫폼에 후원 연동 추가
-                // dc debug edit <플레이어> <플랫폼> <치지직UUID/숲아이디> : 해당 플레이어의 플랫폼에 후원 연동 수정
-                // dc debug remove <플레이어> <플랫폼> <치지직UUID/숲아이디> : 플레이어의 플랫폼에 후원 연동 삭제
-                // dc debug on <플레이어> : 해당 플레이어 후원 연동 활성화
-                // dc debug off <플레이어> : 해당 플레이어 후원 연동 비활성화
                 if (args.length < 2) {
                     sender.sendMessage(ChatColor.RED + "사용법: /dc debug <add|edit|remove|on|off> <플레이어> [<플랫폼> <치지직UUID/숲아이디>]");
                     return true;
@@ -231,7 +219,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "give":
-                // dc give <플레이어> <후원금액> : 해당 플레이어에게 <후원금액>에 해당하는 보상 실행
                 if (args.length < 3) {
                     sender.sendMessage(ChatColor.RED + "사용법: /dc give <플레이어> <후원금액>");
                     return true;
@@ -269,7 +256,6 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "reload":
-                // dc reload : 설정 파일 리로드
                 if (!sender.isOp()) {
                     sender.sendMessage(ChatColor.RED + "이 명령어는 OP 권한이 필요합니다.");
                     return true;
