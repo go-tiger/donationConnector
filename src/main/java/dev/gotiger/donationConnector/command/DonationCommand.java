@@ -220,6 +220,40 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "give":
                 // dc give <플레이어> <후원금액> : 해당 플레이어에게 <후원금액>에 해당하는 보상 실행
+                if (args.length < 3) {
+                    sender.sendMessage(ChatColor.RED + "사용법: /dc give <플레이어> <후원금액>");
+                    return true;
+                }
+
+                if (!sender.isOp()) {
+                    sender.sendMessage(ChatColor.RED + "이 명령어는 OP 권한이 필요합니다.");
+                    return true;
+                }
+
+                String giveTargetName = args[1];
+                Player giveTargetPlayer = Bukkit.getPlayer(giveTargetName);
+
+                if (giveTargetPlayer == null) {
+                    sender.sendMessage(ChatColor.RED + "해당 플레이어를 찾을 수 없습니다.");
+                    return true;
+                }
+
+                int donationAmount;
+                try {
+                    donationAmount = Integer.parseInt(args[2]);
+                    if (donationAmount <= 0) {
+                        sender.sendMessage(ChatColor.RED + "후원 금액은 0보다 커야 합니다.");
+                        return true;
+                    }
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(ChatColor.RED + "올바른 후원 금액을 입력하세요.");
+                    return true;
+                }
+
+                donationService.executeCommands(giveTargetPlayer, donationAmount);
+
+                sender.sendMessage(ChatColor.GREEN + giveTargetName + "님에게 " + donationAmount + "원의 보상을 지급했습니다.");
+                giveTargetPlayer.sendMessage(ChatColor.GREEN + "후원이 접수되었습니다! 후원 금액: " + donationAmount + "원");
                 break;
 
             case "reload":
