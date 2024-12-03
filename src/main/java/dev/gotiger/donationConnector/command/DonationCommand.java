@@ -53,6 +53,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 if ("chzzk".equals(platform)) {
                     String result = chzzkService.addChzzkStreamer(nickname, uuid, broadcastUUID);
                     sender.sendMessage(result);
+                    chzzkService.connectChzzkStreamer(uuid, broadcastUUID);
                 } else {
                     sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
                 }
@@ -67,6 +68,8 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 if ("chzzk".equals(platform)) {
                     String result = chzzkService.updateChzzkStreamer(nickname, uuid, broadcastUUID);
                     sender.sendMessage(result);
+                    chzzkService.disconnectChzzkStreamer(uuid);
+                    chzzkService.connectChzzkStreamer(uuid, broadcastUUID);
                 } else {
                     sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
                 }
@@ -80,6 +83,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 if ("chzzk".equals(platform)) {
                     String result = chzzkService.deleteChzzkStreamer(nickname, uuid);
                     sender.sendMessage(result);
+                    chzzkService.disconnectChzzkStreamer(uuid);
                 } else {
                     sender.sendMessage("추가 할 수 없는 플랫폼 입니다.");
                 }
@@ -88,11 +92,13 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
             case "on":
                 // dc on : 입력한 플레이어의 후원 연동 활성화
                 sender.sendMessage(donationService.enableDonation(uuid));
+                donationService.reconnectDonation(uuid);
                 break;
 
             case "off":
                 // dc off : 입력한 플레이어의 후원 연동 비활성화
                 sender.sendMessage(donationService.disableDonation(uuid));
+                chzzkService.disconnectChzzkStreamer(uuid);
                 break;
 
             case "reconnect":
@@ -158,6 +164,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                         }
                         String addResult = chzzkService.addChzzkStreamer(targetName, targetUUID, id);
                         sender.sendMessage(addResult);
+                        chzzkService.connectChzzkStreamer(targetUUID, id);
                         break;
 
                     case "edit":
@@ -171,6 +178,8 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                         }
                         String editResult = chzzkService.updateChzzkStreamer(targetName, targetUUID, id);
                         sender.sendMessage(editResult);
+                        chzzkService.disconnectChzzkStreamer(targetUUID);
+                        chzzkService.connectChzzkStreamer(targetUUID, id);
                         break;
 
                     case "remove":
@@ -184,6 +193,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                         }
                         String removeResult = chzzkService.deleteChzzkStreamer(targetName, targetUUID);
                         sender.sendMessage(removeResult);
+                        chzzkService.disconnectChzzkStreamer(targetUUID);
                         break;
 
                     case "on":
@@ -197,6 +207,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                         }
                         String enableResult = donationService.enableDonation(targetUUID);
                         sender.sendMessage(enableResult);
+                        donationService.reconnectDonation(targetUUID);
                         break;
 
                     case "off":
@@ -210,6 +221,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                         }
                         String disableResult = donationService.disableDonation(targetUUID);
                         sender.sendMessage(disableResult);
+                        chzzkService.disconnectChzzkStreamer(targetUUID);
                         break;
 
                     default:
