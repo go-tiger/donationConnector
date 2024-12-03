@@ -258,6 +258,10 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
 
             case "reload":
                 // dc reload : 설정 파일 리로드
+                if (!sender.isOp()) {
+                    sender.sendMessage(ChatColor.RED + "이 명령어는 OP 권한이 필요합니다.");
+                    return true;
+                }
                 configManager.reloadConfig();
                 configManager.getStreamerManager().reloadStreamerConfig();
                 sender.sendMessage(ChatColor.GREEN + "플러그인이 성공적으로 리로드되었습니다.");
