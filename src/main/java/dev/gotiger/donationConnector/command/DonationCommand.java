@@ -128,6 +128,94 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
                 // dc debug remove <플레이어> <플랫폼> <치지직UUID/숲아이디> : 플레이어의 플랫폼에 후원 연동 삭제
                 // dc debug on <플레이어> : 해당 플레이어 후원 연동 활성화
                 // dc debug off <플레이어> : 해당 플레이어 후원 연동 비활성화
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "사용법: /dc debug <add|edit|remove|on|off> <플레이어> [<플랫폼> <치지직UUID/숲아이디>]");
+                    return true;
+                }
+
+                String debugAction = args[1].toLowerCase();
+                String targetName = args.length > 2 ? args[2] : null;
+                String debugPlatform = args.length > 3 ? args[3].toLowerCase() : null;
+                String id = args.length > 4 ? args[4] : null;
+
+                if (!sender.isOp()) {
+                    sender.sendMessage(ChatColor.RED + "이 명령어는 OP 권한이 필요합니다.");
+                    return true;
+                }
+
+                Player targetPlayer = targetName != null ? Bukkit.getPlayer(targetName) : null;
+                UUID targetUUID = targetPlayer != null ? targetPlayer.getUniqueId() : null;
+
+                switch (debugAction) {
+                    case "add":
+                        if (targetName == null || debugPlatform == null || id == null) {
+                            sender.sendMessage(ChatColor.RED + "사용법: /dc debug add <플레이어> <플랫폼> <치지직UUID/숲아이디>");
+                            return true;
+                        }
+                        if (targetUUID == null) {
+                            sender.sendMessage(ChatColor.RED + "플레이어를 찾을 수 없습니다.");
+                            return true;
+                        }
+                        String addResult = chzzkService.addChzzkStreamer(targetName, targetUUID, id);
+                        sender.sendMessage(addResult);
+                        break;
+
+                    case "edit":
+                        if (targetName == null || debugPlatform == null || id == null) {
+                            sender.sendMessage(ChatColor.RED + "사용법: /dc debug edit <플레이어> <플랫폼> <치지직UUID/숲아이디>");
+                            return true;
+                        }
+                        if (targetUUID == null) {
+                            sender.sendMessage(ChatColor.RED + "플레이어를 찾을 수 없습니다.");
+                            return true;
+                        }
+                        String editResult = chzzkService.updateChzzkStreamer(targetName, targetUUID, id);
+                        sender.sendMessage(editResult);
+                        break;
+
+                    case "remove":
+                        if (targetName == null || debugPlatform == null) {
+                            sender.sendMessage(ChatColor.RED + "사용법: /dc debug remove <플레이어> <플랫폼>");
+                            return true;
+                        }
+                        if (targetUUID == null) {
+                            sender.sendMessage(ChatColor.RED + "플레이어를 찾을 수 없습니다.");
+                            return true;
+                        }
+                        String removeResult = chzzkService.deleteChzzkStreamer(targetName, targetUUID);
+                        sender.sendMessage(removeResult);
+                        break;
+
+                    case "on":
+                        if (targetName == null) {
+                            sender.sendMessage(ChatColor.RED + "사용법: /dc debug on <플레이어>");
+                            return true;
+                        }
+                        if (targetUUID == null) {
+                            sender.sendMessage(ChatColor.RED + "플레이어를 찾을 수 없습니다.");
+                            return true;
+                        }
+                        String enableResult = donationService.enableDonation(targetUUID);
+                        sender.sendMessage(enableResult);
+                        break;
+
+                    case "off":
+                        if (targetName == null) {
+                            sender.sendMessage(ChatColor.RED + "사용법: /dc debug off <플레이어>");
+                            return true;
+                        }
+                        if (targetUUID == null) {
+                            sender.sendMessage(ChatColor.RED + "플레이어를 찾을 수 없습니다.");
+                            return true;
+                        }
+                        String disableResult = donationService.disableDonation(targetUUID);
+                        sender.sendMessage(disableResult);
+                        break;
+
+                    default:
+                        sender.sendMessage(ChatColor.RED + "알 수 없는 debug 명령어입니다. 사용법: /dc debug <add|edit|remove|on|off>");
+                        break;
+                }
                 break;
 
             case "give":
@@ -208,7 +296,7 @@ public class DonationCommand implements CommandExecutor, TabCompleter {
             String subCommand = args[0].toLowerCase();
             String debugSubCommand = args[1].toLowerCase();
 
-            if (subCommand.equals("debug") && (debugSubCommand.equals("add") || debugSubCommand.equals("edit") || debugSubCommand.equals("remove"))) {
+            if (subCommand.equals("debug") && (debugSubCommand.equals("add") || debugSubCommand.equals("edit"))) {
                 completions.add("<치지직UUID/숲ID>");
             }
         }
