@@ -41,7 +41,14 @@ public class ChzzkService {
                             public void onDonationChat(DonationChatEvent e) {
                                 Integer payAmount = e.getPayAmount();
                                 donationService.executeCommands(player, payAmount);
-                                Bukkit.getLogger().info(player.getName() + "가 " + payAmount + "원을 받았습니다.");
+                                plugin.getLogger().info(String.format
+                                        ("마크닉: %s, 후원자: %s, 후원 메시지: %s, 후원 금액: %s원",
+                                                player.getName(),
+                                                e.getNickname(),
+                                                e.getMessage(),
+                                                payAmount
+                                        )
+                                );
                             }
                         });
                 api.connect();
